@@ -95,7 +95,7 @@ class RAG:
             outputString += "From the Youtube Video " + results["metadatas"][0][i]["youtube_source"] + ": \n" + results["documents"][0][i] + "\n"
         return outputString
 
-    def process_query(self, query, topQ)
+    def process_query(self, query, topQ):
         rephrased = self.openai_client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
