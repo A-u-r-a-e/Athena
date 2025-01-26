@@ -15,11 +15,11 @@ class RAG:
             data = json.load(f)
             self.openaikey = data["openai"]
         
-        self.openai_client = OpenAI(api_key=openaikey)
-        self.embedding_function = OpenAIEmbeddingFunction(api_key=openaikey)
+        self.openai_client = OpenAI(api_key=self.openaikey)
+        self.embedding_function = OpenAIEmbeddingFunction(api_key=self.openaikey)
 
         self.chroma_client = chromadb.PersistentClient(path = os.path.join(private_path,"data"))
-        self.collection = self.chroma_client.get_or_create_collection(name=COLLECTION_NAME, embedding_function=self.embedding_function)
+        self.collection = self.chroma_client.get_or_create_collection(name=collection_name, embedding_function=self.embedding_function)
         
 
     def load_text_from_file(self, filename, data_path):
@@ -59,7 +59,7 @@ class RAG:
         
         #merge them with one extra start and end chunk
         merged_chunks = [chunks[0]]
-        for idx in range(1,linecount):
+        for idx in range(1,len(chunks)):
             merged_chunks.append(chunks[idx-1] + chunks[idx])
 
         return merged_chunks
@@ -81,7 +81,7 @@ class RAG:
         if (len(os.listdir(from_path))>0):
             for filename in tqdm.tqdm(os.listdir(from_path), total=len(os.listdir(from_path))):
                 chunked_text = self.load_text_from_file(filename, from_path)
-                self.chroma_append(collection, chunked_text)
+                self.chroma_append(self.collection, chunked_text)
                 self.move_used_data(filename, from_path, to_path)
 
     def find_in_chroma(self, qtext,topQ):
