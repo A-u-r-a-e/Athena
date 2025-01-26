@@ -11,6 +11,6 @@ Athena = RAG(
     collection_name = COLLECTION_NAME
 )
 
-# Athena.chroma_update(FRESH_DATA_PATH, PROCESSED_DATA_PATH)
+Athena.chroma_update(FRESH_DATA_PATH, PROCESSED_DATA_PATH)
 
-# print(Athena.process_query("How do I maintain my 4.0 GPA?", 10))
+print(Athena.process_query("How do I maintain my 4.0 GPA?", 10))
