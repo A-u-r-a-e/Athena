@@ -6,20 +6,22 @@ import os
 import tqdm
 
 class RAG:
-    def __init__(self, private_path, collection_name = "Amy_v151"):
+    def __init__(self, private_path):
 
         self.chunk_length = 250*(5+1)
         self.descriptor = "You are Athena, a conversational, concise, and helpful AI assistant helping Amy Wang(wAmyy) answer her fan's questions. Within each prompt, transcripts (with timestamps) from her videos will be given. Please quote timestamps and transcripts and provide the youtube link if you use them in your reponse Athena. If you deem the transcript excerpts irrelevant or redudant to include, you should ignore them."
 
-        with open(os.path.join(private_path,"keys.json")) as f:
-            data = json.load(f)
-            self.openaikey = data["openai"]
+        constants =  open(os.path.join(private_path,"constants.json"))
+        self.data = json.load(constants)
+
+        self.openaikey = self.data["openai"]
+        self.collection_name = self.data["collection_name"]
         
         self.openai_client = OpenAI(api_key=self.openaikey)
         self.embedding_function = OpenAIEmbeddingFunction(api_key=self.openaikey)
 
         self.chroma_client = chromadb.PersistentClient(path = os.path.join(private_path,"data"))
-        self.collection = self.chroma_client.get_or_create_collection(name=collection_name, embedding_function=self.embedding_function)
+        self.collection = self.chroma_client.get_or_create_collection(name=self.collection_name, embedding_function=self.embedding_function)
         
 
     def load_text_from_file(self, filename, data_path):
@@ -77,7 +79,9 @@ class RAG:
                 metadatas=[text["metadata"]]
             )
 
-    def chroma_update(self, from_path,to_path):
+    def chroma_update(self):
+        from_path = self.data["FRESH_DATA_PATH"]
+        to_path = self.data["PROCESSED_DATA_PATH"]
         if (len(os.listdir(from_path))>0):
             for filename in tqdm.tqdm(os.listdir(from_path), total=len(os.listdir(from_path))):
                 chunked_text = self.load_text_from_file(filename, from_path)
