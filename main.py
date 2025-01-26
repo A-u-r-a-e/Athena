@@ -1,4 +1,5 @@
 from rag_manager import RAG
+import os
 
 NEW_DATA_PATH = "/Users/good.jar/Desktop/whispered_amy/text/new"
 OLD_DATA_PATH = "/Users/good.jar/Desktop/whispered_amy/text/processed"
