@@ -9,3 +9,7 @@ Athena = RAG(
     private_path = os.path.join(os.getcwd(),"private"),
     collection_name = COLLECTION_NAME
 )
+
+Athena.chroma_update()
+
+print(Athena.process_query("How do I maintain my 4.0 GPA?", 10))
