@@ -9,7 +9,7 @@ class RAG:
     def __init__(self, private_path):
 
         self.chunk_length = 250*(5+1)
-        self.descriptor = "You are Athena, a conversational, concise, and helpful AI assistant helping Amy Wang(wAmyy) answer her fan's questions. Within each prompt, transcripts (with timestamps) from her videos will be given. Please quote timestamps and transcripts and provide the youtube link if you use them in your reponse Athena. If you deem the transcript excerpts irrelevant or redudant to include, you should ignore them."
+        self.descriptor = "You are Athena, a conversational, concise, and helpful AI assistant helping Amy Wang(wAmyy) answer her fan's questions. Within each prompt, chat history of your conversation with the user so far and transcripts (with timestamps) from Amy's videos will be given with a citeable URL link. Please quote youtube links and timestamps in transcripts if you use them in your response. If you, Athena, deem the transcript excerpts irrelevant or redudant to include, you should ignore them."
 
         constants =  open(os.path.join(private_path,"constants.json"))
         self.data = json.load(constants)
@@ -22,8 +22,7 @@ class RAG:
 
         self.chroma_client = chromadb.PersistentClient(path = os.path.join(private_path,"data"))
         self.collection = self.chroma_client.get_or_create_collection(name=self.collection_name, embedding_function=self.embedding_function)
-        
-
+    
     def load_text_from_file(self, filename, data_path):
         texts = []
         filepath = os.path.join(data_path,filename)
@@ -96,10 +95,10 @@ class RAG:
         )
         outputString = ""
         for i in range(len(results["ids"][0])):
-            outputString += "From the Youtube Video " + results["metadatas"][0][i]["youtube_source"] + ": \n" + results["documents"][0][i] + "\n"
+            outputString += "Cite the following youtube link if used: " + results["metadatas"][0][i]["youtube_source"] + "\n Transcript Contents: \n" + results["documents"][0][i] + "\n"
         return outputString
 
-    def process_query(self, query, topQ):
+    def process_query(self, channel_context, query, topQ):
         rephrased = self.openai_client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
@@ -115,7 +114,7 @@ class RAG:
             store=True,
             messages=[
                 {"role": "system", "content": self.descriptor},
-                {"role": "user", "content": f"Most relevant transcript segments from Amy's videos in order: {context} \n Fan/Student Question: Hi Athena! {query}"}
+                {"role": "user", "content": f"The conversation so far: {channel_context} \n Most relevant transcript segments from Amy's videos in order: {context} \n Fan/Student Question: Hi Athena! {query}"}
             ]
         )
 
