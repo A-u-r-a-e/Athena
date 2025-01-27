@@ -17,6 +17,8 @@ class RAG:
         self.collection_name = self.data["collection_name"]
         self.descriptor = self.data["descriptor"]
         self.rephrase_prompt = self.data["rephraser_descriptor"]
+        self.base_model = self.data["base_model"]
+        self.rephrase_model = self.data["rephrase_model"]
 
         self.openai_client = OpenAI(api_key=self.openaikey)
         self.embedding_function = OpenAIEmbeddingFunction(api_key=self.openaikey)
@@ -101,7 +103,7 @@ class RAG:
 
     def process_query(self, channel_context, query, topQ):
         rephrased = self.openai_client.chat.completions.create(
-            model="gpt-4o-mini",
+            model=self.rephrase_model,
             messages=[
                 {"role": "system", "content": self.rephrase_prompt},
                 {"role": "user", "content": query}
@@ -111,7 +113,7 @@ class RAG:
         context = self.find_in_chroma(rephrased.choices[0].message.content, topQ)
 
         answer = self.openai_client.chat.completions.create(
-            model="gpt-4o-mini",
+            model=self.base_model,
             store=True,
             messages=[
                 {"role": "system", "content": self.descriptor},
