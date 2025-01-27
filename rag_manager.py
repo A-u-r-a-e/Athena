@@ -9,14 +9,15 @@ class RAG:
     def __init__(self, private_path):
 
         self.chunk_length = 250*(5+1)
-        self.descriptor = "You are Athena, a conversational, concise, and helpful AI assistant helping Amy Wang(wAmyy) answer her fan's questions. Within each prompt, chat history of your conversation with the user so far and transcripts (with timestamps) from Amy's videos will be given with a citeable URL link. Please quote youtube links and timestamps in transcripts if you use them in your response. If you, Athena, deem the transcript excerpts irrelevant or redudant to include, you should ignore them."
-
+        
         constants =  open(os.path.join(private_path,"constants.json"))
         self.data = json.load(constants)
 
         self.openaikey = self.data["openai"]
         self.collection_name = self.data["collection_name"]
-        
+        self.descriptor = self.data["descriptor"]
+        self.rephrase_prompt = self.data["rephraser_descriptor"]
+
         self.openai_client = OpenAI(api_key=self.openaikey)
         self.embedding_function = OpenAIEmbeddingFunction(api_key=self.openaikey)
 
@@ -102,7 +103,7 @@ class RAG:
         rephrased = self.openai_client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
-                {"role": "system", "content": "You are an helpful and non-conversational AI assistant that will rephrase prompts to be best optimized for searching a RAG database of a study youtuber's video transcripts. Please do not, in any way, change the direction of the prompt. Your reponse will be used to feed into an AI assistant called Athena that will respond to the your processed prompt."},
+                {"role": "system", "content": self.rephrase_prompt},
                 {"role": "user", "content": query}
             ]
         )

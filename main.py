@@ -1,10 +1,10 @@
 from rag_manager import RAG
-from channel_manager import ChannelsManager
+from channel_manager import ChannelManager
 import os
 
 TOP_N = 10
 
-Channels = ChannelsManager()
+Channels = ChannelManager()
 
 Athena = RAG(private_path = os.path.join(os.getcwd(),"private"),)
 Athena.chroma_update()
