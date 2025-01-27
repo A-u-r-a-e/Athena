@@ -117,7 +117,7 @@ class RAG:
             store=True,
             messages=[
                 {"role": "system", "content": self.descriptor},
-                {"role": "user", "content": f"The conversation so far: {channel_context} \n Most relevant transcript segments from Amy's videos in order: {context} \n Fan/Student Question: Hi Athena! {query}"}
+                {"role": "user", "content": f"The conversation so far: {channel_context} \n Most relevant transcript segments from Amy's videos in order: {context} \n Fan/Student prompt to you (athena) to be answered using the previously provided Amy'stranscript segments if they are and only if they are applicable: {query}"}
             ]
         )
 
