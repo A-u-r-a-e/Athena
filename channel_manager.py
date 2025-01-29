@@ -8,6 +8,7 @@ class Message:
     content: str
     timestamp: int
 
+# TODO: add a way to store and load conversations:
 class ChannelManager:
     def __init__(self):
         self.channels = {}
