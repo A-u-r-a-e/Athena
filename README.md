@@ -1,2 +1,2 @@
 # Athena
-i will NOT use claude 3.5 sonnet to write everything this time
+i WILL NOT do any more web dev from this point on
