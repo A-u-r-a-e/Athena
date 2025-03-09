@@ -103,6 +103,8 @@ function addMessageToUI(message, role) {
     const links = contentDiv.getElementsByTagName('a');
     for (let link of links) {
         link.className = 'text-blue-400 underline';
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
     }
     
     messageDiv.appendChild(contentDiv);
