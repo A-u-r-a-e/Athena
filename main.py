@@ -1,14 +1,15 @@
 from rag_manager import RAG
 from channel_manager import ChannelManager
 import os
+import sys
 from flask import Flask, request, jsonify, render_template
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', static_url_path='/static')
 
 TOP_N = 10
 
-Channels = ChannelManager()
-Athena = RAG(private_path = os.path.join(os.getcwd(),"private"),)
+Channels = ChannelManager(private_path = os.path.join(os.getcwd(),"private"))
+Athena = RAG(private_path = os.path.join(os.getcwd(),"private"))
 
 Athena.chroma_update()
 
@@ -53,4 +54,7 @@ def chat():
     })
 
 if __name__ == "__main__":
-    app.run(debug=False)
+    port = 5000
+    if len(sys.argv) > 2 and sys.argv[1] == '--port':
+        port = int(sys.argv[2])
+    app.run(debug=True, port=port)
