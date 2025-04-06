@@ -11,7 +11,7 @@ TOP_N = 10
 Channels = ChannelManager(private_path = os.path.join(os.getcwd(),"private"))
 Athena = RAG(private_path = os.path.join(os.getcwd(),"private"))
 
-Athena.chroma_update()
+# Athena.chroma_update()
 
 @app.route('/')
 def index():

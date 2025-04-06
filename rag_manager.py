@@ -15,7 +15,7 @@ class RAG:
 
         self.openaikey = self.data["openai"]
         self.collection_name = self.data["collection_name"]
-        self.descriptor = self.data["descriptor"] + " Your last database of transcripts update was at " + self.data["last_update"]
+        self.descriptor = open(os.path.join(private_path,self.data["descriptor_file"])).read()
         self.rephrase_prompt = self.data["rephraser_descriptor"]
         self.base_model = self.data["base_model"]
         self.rephrase_model = self.data["rephrase_model"]
