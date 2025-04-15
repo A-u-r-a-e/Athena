@@ -45,10 +45,13 @@ def chat():
     # Add user message and get response
     Channels.add_message(message, "User")
     query, response = Athena.process_query(chat_history, message)
-    Channels.add_message(f"QUERY: {query} \n RESPONSE: {response}", "Athena")
-    
+
+    rag_prompt_and_normal_response = f"RAG_PROMPT: {query} \n RESPONSE: {response}"
+
+    Channels.add_message(response, "Athena")
+
     return jsonify({
-        'response': f"QUERY: {query} \n RESPONSE: {response}"
+        'response': response
     })
 
 if __name__ == "__main__":
