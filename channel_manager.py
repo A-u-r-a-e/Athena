@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import os
 import json
 from uuid import *
 from time import *
@@ -19,7 +20,7 @@ class ChannelManager:
         self.channel_ids = []
         self.current_channel: int
     def sort_and_list_channels(self):
-        self.channel_ids.sort(key=lambda x: self.channels[x][last_updated], reverse=True)
+        self.channel_ids.sort(key=lambda x: self.channels[x]["last_updated"], reverse=True)
     def switch_or_make_channel(self, channel_id):
         new_channel = {
             "messages": [],

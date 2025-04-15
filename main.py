@@ -6,8 +6,6 @@ from flask import Flask, request, jsonify, render_template
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
 
-TOP_N = 10
-
 Channels = ChannelManager(private_path = os.path.join(os.getcwd(),"private"))
 Athena = RAG(private_path = os.path.join(os.getcwd(),"private"))
 
@@ -46,11 +44,11 @@ def chat():
     
     # Add user message and get response
     Channels.add_message(message, "User")
-    response = Athena.process_query(chat_history, message, TOP_N)
-    Channels.add_message(response, "Athena")
+    query, response = Athena.process_query(chat_history, message)
+    Channels.add_message(f"QUERY: {query} \n RESPONSE: {response}", "Athena")
     
     return jsonify({
-        'response': response
+        'response': f"QUERY: {query} \n RESPONSE: {response}"
     })
 
 if __name__ == "__main__":

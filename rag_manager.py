@@ -20,6 +20,8 @@ class RAG:
         self.base_model = self.data["base_model"]
         self.rephrase_model = self.data["rephrase_model"]
 
+        self.TOP_N = self.data["TOP_N"]
+
         self.openai_client = OpenAI(api_key=self.openaikey)
         self.embedding_function = OpenAIEmbeddingFunction(api_key=self.openaikey)
 
@@ -101,17 +103,19 @@ class RAG:
             outputString += "Cite the following youtube link if used: " + results["metadatas"][0][i]["youtube_source"] + "\n Transcript Contents: \n" + results["documents"][0][i] + "\n"
         return outputString
 
-    def process_query(self, channel_context, query, topQ):
+    def process_query(self, channel_context, query):
+
+        conversation_context = f"The conversation so far: {channel_context} \n " if channel_context != "" else ""
+
         rephrased = self.openai_client.chat.completions.create(
             model=self.rephrase_model,
             messages=[
                 {"role": "system", "content": self.rephrase_prompt},
-                {"role": "user", "content": query}
+                {"role": "user", "content": f"{conversation_context} \n CURRENT PROMPT: {query}"}
             ]
         )
-        
-        conversation_context = f"The conversation so far: {channel_context} \n " if channel_context != "" else ""
-        context = self.find_in_chroma(rephrased.choices[0].message.content, topQ)
+
+        context = self.find_in_chroma(rephrased.choices[0].message.content, self.TOP_N)
 
         answer = self.openai_client.chat.completions.create(
             model=self.base_model,
@@ -122,4 +126,4 @@ class RAG:
             ]
         )
 
-        return answer.choices[0].message.content
+        return rephrased.choices[0].message.content, answer.choices[0].message.content

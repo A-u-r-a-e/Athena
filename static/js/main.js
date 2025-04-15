@@ -33,6 +33,19 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
+function toggleDarkMode() {
+    // TODO, flip:
+    /*
+    bg-root, 
+    bg-primary, 
+    bg-secondary, 
+    text-primary, 
+    text-secondary, 
+    code-bg, 
+    border-color,
+    */
+}
+
 function handleKeydown(e) {
     if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
@@ -42,7 +55,7 @@ function handleKeydown(e) {
 
 function adjustTextareaHeight() {
     messageInput.style.height = 'auto';
-    messageInput.style.height = Math.min(messageInput.scrollHeight, 192) + 'px';
+    messageInput.style.height = Math.min(messageInput.scrollHeight+4, 192) + 'px';
 }
 
 async function handleSubmit(e) {
